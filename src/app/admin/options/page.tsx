@@ -1,7 +1,8 @@
-"use client";
-import Image from "next/image";
+"use client"; 
 import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
+
+const baseApi = "/api/sqlite/";
 
 export default function Home() {
   // États pour les données et sélections de chaque colonne
@@ -26,7 +27,7 @@ export default function Home() {
 
   // Chargement initial : options de depth = 1
   useEffect(() => {
-    fetch("/api/options")
+    fetch(`${baseApi}options`)
       .then((res) => res.json())
       .then((data) => {
         setColumns([data, [], [], [], []]);
@@ -44,7 +45,7 @@ export default function Home() {
     }
     setSelected(newSelected);
     // Charge les enfants pour la colonne suivante
-    fetch(`/api/options?parentId=${option.id}`)
+    fetch(`${baseApi}options?parentId=${option.id}`)
       .then((res) => res.json())
       .then((data) => {
         const newColumns = [...columns];
@@ -70,7 +71,7 @@ export default function Home() {
     setLoading(true);
     const depth = (modal.parentDepth ?? 0) + 1;
     const parentID = modal.parentID;
-    const res = await fetch("/api/options", {
+    const res = await fetch(`${baseApi}options`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...form, depth, parentID }),
@@ -81,7 +82,7 @@ export default function Home() {
       setForm({ name: "", nameAr: "", priority: 1, tag: "" });
       // Rafraîchir la colonne enfant
       if (typeof parentID === "number") {
-        fetch(`/api/options?parentId=${parentID}`)
+        fetch(`${baseApi}options?parentId=${parentID}`)
           .then((r) => r.json())
           .then((data) => {
             const newColumns = [...columns];
@@ -91,7 +92,7 @@ export default function Home() {
           });
       } else {
         // Ajout racine
-        fetch(`/api/options`)
+        fetch(baseApi)
           .then((r) => r.json())
           .then((data) => {
             const newColumns = [...columns];
@@ -120,7 +121,7 @@ export default function Home() {
     if (!editModal.option) return;
     setEditLoading(true);
     const { id, depth, parentID } = editModal.option;
-    const res = await fetch(`/api/options/${id}`, {
+    const res = await fetch(`${baseApi}options/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...editForm, depth, parentID }),
@@ -130,7 +131,7 @@ export default function Home() {
       setEditModal({ open: false, option: null, colIdx: 0 });
       // Rafraîchir la colonne courante
       if (typeof parentID === "number") {
-        fetch(`/api/options?parentId=${parentID}`)
+        fetch(`${baseApi}options?parentId=${parentID}`)
           .then((r) => r.json())
           .then((data) => {
             const newColumns = [...columns];
@@ -140,7 +141,7 @@ export default function Home() {
           });
       } else {
         // Racine
-        fetch(`/api/options`)
+        fetch(baseApi)
           .then((r) => r.json())
           .then((data) => {
             const newColumns = [...columns];
