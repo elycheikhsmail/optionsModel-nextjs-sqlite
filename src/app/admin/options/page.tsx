@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
 
-const baseApi = "/api/sqlite/";
-
+//const baseApi = "/api/sqlite/";
+const baseApi = "/api/tursor/";
 export default function Home() {
   // États pour les données et sélections de chaque colonne
   const [columns, setColumns] = useState([[], [], [], [], []]);
